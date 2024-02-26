@@ -1,4 +1,4 @@
-﻿#include <stdexcept>
+#include <stdexcept>
 #include <unordered_map>
 #include <string>
 #include <iostream>
@@ -8,27 +8,29 @@
 
 class Polynomial {
 public:
-    std::list<Monomial> monoms;
+    std::list<Monomial> monomials;      // polynomial as a list of monomials
 
-    Polynomial() : monoms({}) {}
+    // Default constructor
+    Polynomial() : monomials({}) {}
 
-    void push(const Monomial& monom) {
-        for (auto it = monoms.begin(); it != monoms.end(); ++it) {
-            if (it->variables == monom.variables) {
-                it->coef += monom.coef;
-                if (it->coef == 0) {
-                    monoms.erase(it);
+    // adding a monomial to a polynomial
+    void push(const Monomial& monomial) {
+        for (auto el = monomials.begin(); el != monomials.end(); ++el) {
+            if (el->variables == monomial.variables) {
+                el->coef += monomial.coef;
+                if (el->coef == 0) {
+                    monomials.erase(el);
                 }
                 return;
             }
         }
-        if (monom.coef != 0) {
-            monoms.push_back(monom);
+        if (monomial.coef != 0) {
+            monomials.push_back(monomial);
         }
     }
 
 
-    // Метод для проверки корректности входной строки
+    // Checking the correctness of the input string
     bool isValidInput(const std::string& str) {
         for (char c : str) {
             if (!std::isdigit(c) && c != '+' && c != '-' && c != '*' && c != '^' && !std::isalpha(c)) {
@@ -38,38 +40,38 @@ public:
         return true;
     }
 
-    // Оператор сложения
+    // Addition operator
     Polynomial operator+(const Polynomial& other) {
         Polynomial result = *this;
-        for (const auto& monom : other.monoms) {
-            result.push(monom);
+        for (const auto& monomial : other.monomials) {
+            result.push(monomial);
         }
         return result;
     }
 
-    // Оператор вычитания
+    // Subtraction operator
     Polynomial operator-(const Polynomial& other) {
         Polynomial result = *this;
-        for (auto& monom : other.monoms) {
-            Monomial negative_monom(monom);
-            negative_monom.coef = -monom.coef;
-            result.push(negative_monom);
+        for (auto& monomial : other.monomials) {
+            Monomial negative_monomial(monomial);
+            negative_monomial.coef = -monomial.coef;
+            result.push(negative_monomial);
         }
         return result;
     }
 
-    // Оператор вывода
-    friend std::ostream& operator<<(std::ostream& os, const Polynomial& Polynomial) {
-        for (std::list<Monomial>::const_iterator it = Polynomial.monoms.begin(); it != Polynomial.monoms.end(); ++it) {
-            if (it != Polynomial.monoms.begin()) {
+    // Output operator
+    friend std::ostream& operator<<(std::ostream& os, const Polynomial& Polynomial) { // !!!!!!!!!! изменить под свой список с -
+        for (std::list<Monomial>::const_iterator el = Polynomial.monomials.begin(); el != Polynomial.monomials.end(); ++el) {
+            if (el != Polynomial.monomials.begin()) {
                 os << " + ";
             }
-            os << *it;
+            os << *el;
         }
         return os;
     }
 
-    // Оператор ввода
+    // Input operator
     friend std::istream& operator>>(std::istream& is, Polynomial& Polynomial) {
         std::string str;
         is >> str;
