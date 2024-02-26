@@ -21,6 +21,12 @@ public:
         variables = {};
     }
 
+    //Copy constructor
+    Monomial(const Monomial& other) {
+        this->coef = other.coef;
+        this->variables = other.variables;
+    }
+
     // Addition operator
     Monomial operator+(const Monomial& other) {
         if (this->variables == other.variables) {
