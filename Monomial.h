@@ -21,6 +21,12 @@ public:
         variables = {};
     }
 
+    //Copy constructor
+    Monomial(const Monomial& other) {
+        this->coef = other.coef;
+        this->variables = other.variables;
+    }
+
     // Addition operator
     Monomial operator+(const Monomial& other) {
         if (this->variables == other.variables) {
@@ -41,10 +47,15 @@ public:
         }
     }
 
+    // Getter for variables
+    const std::unordered_map<char, int>& getVariables() const {
+        return variables;
+    }
+
     // Output operator
     friend std::ostream& operator<<(std::ostream& os, const Monomial& monomial) {
         os << monomial.coef;
-        for (const auto& var : monomial.variables) {
+        for (const auto& var : monomial.getVariables()) {
             os << "*" << var.first << "^" << var.second;
         }
         return os;
