@@ -8,25 +8,28 @@
 
 class Polynomial {
 public:
-    std::list<Monomial> monoms;
+    std::list<Monomial> monoms;     // list of monomials
 
-    Polynomial() : monoms({}) {}
+    // Default constructor
+    Polynomial() {
+        monoms = {};
+    }
 
-    void push(const Monomial& monom) {
+    // Adding a monomial to a polynomial
+    void push(const Monomial& monomial) {
         for (auto it = monoms.begin(); it != monoms.end(); ++it) {
-            if (it->variables == monom.variables) {
-                it->coef += monom.coef;
+            if (it->variables == monomial.variables) {
+                it->coef += monomial.coef;
                 if (it->coef == 0) {
                     monoms.erase(it);
                 }
                 return;
             }
         }
-        if (monom.coef != 0) {
-            monoms.push_back(monom);
+        if (monomial.coef != 0) {
+            monoms.push_back(monomial);
         }
     }
-
 
     // Метод для проверки корректности входной строки
     bool isValidInput(const std::string& str) {
