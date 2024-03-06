@@ -1,6 +1,3 @@
-#include <unordered_map>
-#include <string>
-#include <iostream>
 #include "Monomial.h"
 #include "MyList.h"
 
@@ -11,10 +8,9 @@ public:
     // Default constructor
     Polynomial() : monomials() {}
 
-
     // Constructor from string
     Polynomial(std::string str) : monomials() {
-        if (!isValidInput(str)) {
+        if (!is_valid_input(str)) {
             throw std::invalid_argument("Invalid input");
         }
 
@@ -47,11 +43,11 @@ public:
 
     // Adding a monomial to a polynomial
     void push(const Monomial& monomial) {
-        for (auto iter = monomials.begin(); iter != monomials.end(); ++iter) {
+        for (auto iter = this->monomials.begin(); iter != this->monomials.end(); ++iter) {
             if (iter->variables == monomial.variables) {
                 iter->coef += monomial.coef;
                 if (iter->coef == 0) {
-                    monomials.erase(iter);
+                    iter = this->monomials.erase(iter);
                 }
                 return;
             }
@@ -61,19 +57,13 @@ public:
         }
     }
 
-    // Method for checking the validity of the input string
-    bool isValidInput(const std::string& str) {
-        for (char c : str) {
-            if (!std::isdigit(c) && c != '+' && c != '-' && c != '*' && c != '^' && !std::isalpha(c)) {
-                return false;
-            }
-        }
-        return true;
-    }
-
     // Addition operator
-    Polynomial operator+(const Polynomial& other) const {
-        Polynomial result = *this;
+    Polynomial operator+(const Polynomial& other) {
+        Polynomial result;
+        for (auto monomial : this->monomials) {
+            result.monomials.push_back(monomial);
+        }
+
         for (auto monomial : other.monomials) {
             result.push(monomial);
         }
@@ -82,11 +72,42 @@ public:
 
     // Subtraction operator
     Polynomial operator-(Polynomial& other) {
-        Polynomial result = *this;
+        Polynomial result;
+        for (auto monomial : this->monomials) {
+            result.monomials.push_back(monomial);
+        }
+
         for (auto iter = other.monomials.begin(); iter != other.monomials.end(); ++iter) {
             Monomial negative_monom = *iter;
             negative_monom.coef = -negative_monom.coef;
             result.push(negative_monom);
+        }
+        return result;
+    }
+
+    // Multiplication by scalar
+    Polynomial operator*(const double scalar) const {
+        Polynomial result;
+        for (auto monomial : this->monomials) {
+            result.monomials.push_back(monomial * scalar);
+        }
+        return result;
+    }
+
+    // Multiplication by monomial
+    Polynomial operator*(const Monomial other) const {
+        Polynomial result;
+        for (auto monomial : this->monomials) {
+            result.monomials.push_back(monomial * other);
+        }
+        return result;
+    }
+
+    // Multiplication by polynomial
+    Polynomial operator*(const Polynomial other) const {
+        Polynomial result;
+        for (auto monomial : this->monomials) {
+            result = result + (other * monomial);
         }
         return result;
     }
@@ -103,10 +124,10 @@ public:
     }
 
     // Input operator
-    friend std::istream& operator>>(std::istream& is, Polynomial& Polynomial) {
+    friend std::istream& operator>>(std::istream& is, Polynomial& polynomial) {
         std::string str;
-        is >> str;
-        if (!Polynomial.isValidInput(str)) {
+        std::getline(is, str);
+        if (!is_valid_input(str)) {
             throw std::invalid_argument("Invalid input");
         }
 
@@ -120,12 +141,12 @@ public:
         for (char symbol : str) {
             if (symbol == '-') {
                 Monomial monomial(monomial_str);
-                Polynomial.push(monomial);
+                polynomial.push(monomial);
                 monomial_str = "-";
             }
             else if (symbol == '+') {
                 Monomial monomial(monomial_str);
-                Polynomial.push(monomial);
+                polynomial.push(monomial);
                 monomial_str = "";
             }
             else {
@@ -134,6 +155,6 @@ public:
         }
 
         Monomial monomial(monomial_str);
-        Polynomial.push(monomial);
+        polynomial.push(monomial);
     }
 };

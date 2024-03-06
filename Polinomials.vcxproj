@@ -139,6 +139,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="helper_functions.h" />
     <ClInclude Include="Monomial.h" />
     <ClInclude Include="MyList.h" />
     <ClInclude Include="Polynomial.h" />

@@ -1,6 +1,6 @@
 #include <unordered_map>
-#include <string>
 #include <iostream>
+#include "helper_functions.h"
 
 class Monomial {
 public:
@@ -21,6 +21,10 @@ public:
 
     // Constructor from string
     Monomial(std::string str) {
+        if (!is_valid_input(str)) {
+            throw std::invalid_argument("Invalid input");
+        }
+
         int stage = 0;
         std::string int_part = "";
         char var;
@@ -60,14 +64,8 @@ public:
         }
     }
 
-    //Copy constructor
-    /*Monomial(const Monomial& other) {
-        this->coef = other.coef;
-        this->variables = other.variables;
-    }*/
-
     // Addition operator
-    Monomial operator+(const Monomial& other) {
+    Monomial operator+(const Monomial& other) const{
         if (this->variables == other.variables) {
             return Monomial(this->coef + other.coef, this->variables);
         }
@@ -77,13 +75,42 @@ public:
     }
 
     // Subtraction operator
-    Monomial operator-(const Monomial& other) {
+    Monomial operator-(const Monomial& other) const{
         if (this->variables == other.variables) {
             return Monomial(this->coef - other.coef, this->variables);
         }
         else {
             throw std::invalid_argument("Monomials have different variables and cannot be subtracted.");
         }
+    }
+
+    // Multiplication by scalar
+    Monomial operator*(const double scalar) const {
+        Monomial result;
+        result.coef = this->coef * scalar;
+        result.variables = this->variables;
+        return result;
+    }
+
+    // Multiplication by monomial
+    Monomial operator*(const Monomial& other) const {
+        Monomial result;
+        result.coef = this->coef * other.coef;
+        result.variables = this->variables;
+
+        for (const auto& var : other.variables) {
+            if (result.variables.count(var.first)) {
+                result.variables[var.first] += var.second;
+            }
+            else {
+                result.variables[var.first] = var.second;
+            }
+            if (result.variables.count(var.first) == 0) {
+                result.variables.erase(var.first);
+            }
+        }
+
+        return result;
     }
 
     // Output operator
@@ -97,14 +124,23 @@ public:
 
     // Input operator
     friend std::istream& operator>>(std::istream& is, Monomial& monomial) {
+        monomial.coef = 0;
+        monomial.variables = {};
+
         std::string str;
-        is >> str;
+        std::getline(is, str);
+        if (!is_valid_input(str)) {
+            throw std::invalid_argument("Invalid input");
+        }
 
         int stage = 0;
         std::string int_part = "";
         char var;
         for (int i = 0; i < str.length(); i++) {
-            if ((stage == 0) & (str[i] != '*')) {
+            if (str[i] == ' ') {
+                continue;
+            }
+            else if ((stage == 0) & (str[i] != '*')) {
                 int_part += str[i];
             }
             else if ((stage == 0) & (str[i] == '*')) {
@@ -140,3 +176,4 @@ public:
         return is;
     }
 };
+

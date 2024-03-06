@@ -73,7 +73,11 @@ public:
         }
     }
 
-    void erase(Iterator iter) {
+    /*void erase(Iterator iter) {
+        if (first_node == nullptr || iter.current_node == nullptr) {
+            throw std::runtime_error("Invalid iterator or empty list");
+        }
+
         if (iter.current_node == first_node) {
             Node<T>* to_delete = first_node;
             first_node = first_node->next;
@@ -91,7 +95,35 @@ public:
             node->next = node->next->next;
             delete to_delete;
         }
+    }*/
+    Iterator erase(Iterator iter) {
+        if (first_node == nullptr || iter.current_node == nullptr) {
+            throw std::runtime_error("Invalid iterator or empty list");
+        }
+
+        if (iter.current_node == first_node) {
+            Node<T>* to_delete = first_node;
+            first_node = first_node->next;
+            delete to_delete;
+            return Iterator(first_node);
+        }
+
+        Node<T>* node = first_node;
+        while (node->next && node->next != iter.current_node) {
+            node = node->next;
+        }
+
+        if (node->next == iter.current_node) {
+            Node<T>* to_delete = node->next;
+            node->next = node->next->next;
+            delete to_delete;
+            return Iterator(node->next);
+        }
+
+        // If the element is not found, return the iterator end()
+        return Iterator(nullptr);
     }
+
 };
 
 
