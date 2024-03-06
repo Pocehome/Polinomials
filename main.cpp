@@ -6,8 +6,8 @@ int main() {
     //  Monomials:
     cout << "Monomials:" << endl;
 
-    Monomial m1("3*x^5*y^1");
-    Monomial m2("7*y^1*x^5");
+    Monomial m1("3*x^5*y^1*z^2");
+    Monomial m2("7*y^1*z^2*x^5");
 
     //cin >> m1;
     //cin >> m2;
