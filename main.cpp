@@ -3,7 +3,7 @@
 using namespace std;
 
 int main() {
-    /*std::unordered_map<char, int> a1 = {
+    std::unordered_map<char, int> a1 = {
         {'x', 5},
         {'y', 1},
         {'z', 3}
@@ -16,20 +16,21 @@ int main() {
     };
 
     Monomial m1(3.5, a1);
-    Monomial m2(7, a2);*/
+    Monomial m2(7, a2);
 
-    Polynomial p1;   //5*x^2*y^4+7*y^4*x^2+5*x^1*y^4+6*z^2+10
-    Polynomial p2;   //-12*x^2*y^4-4*x^1*y^4+10*z^2+4
+    Polynomial p1("5*x^2*y^4+7*y^4*x^2+5*x^1*y^4+6*z^2+10");
+    Polynomial p2("-12*x^2*y^4-4*x^1*y^4+10*z^2+4");
 
-    cin >> p1;
-    cin >> p2;
+    //cin >> p1;
+    //cin >> p2;
 
-    //cout << p1 << endl;
-    //cout << "\n" << m1 << '\n' << m2 << '\n' << endl;
+    cout << "\n" << m1 << '\n' << m2 << '\n' << endl;
 
-    Polynomial p3 = p1 + p2;
+    Polynomial p3 = p1 + p2;            // Тут ломается p1
     cout << p3 << endl;
 
-    //cout << p1 + p2 << endl;
-    //cout << p1 - p2 << endl;
+    cout << p1 << endl;
+
+    /*Polynomial p4 = p1 - p2;
+    cout << p4 << endl;*/
 }
